@@ -247,6 +247,22 @@ define Device/tl-wr840n-v5
 endef
 TARGET_DEVICES += tl-wr840n-v5
 
+define Device/tplink_tl-wr840n-v6.20-16m
+  $(Device/tplink)
+  DTS := TL-WR840NV6.20-16M
+  IMAGE_SIZE := 16256k
+  DEVICE_TITLE := TP-Link TL-WR840N v6.20 (16M)
+  TPLINK_FLASHLAYOUT := 16Mmtk
+  TPLINK_HWID := 0x08400006
+  TPLINK_HWREV := 0x1
+  TPLINK_HWREVADD := 0x6
+  TPLINK_HVERSION := 3
+  IMAGE/tftp-recovery.bin := pad-extra 64k | $$(IMAGE/factory.bin)
+  SUPPORTED_DEVICES += tl-wr840n-v6.20-16m
+  DEFAULT := n
+endef
+TARGET_DEVICES += tplink_tl-wr840n-v6.20-16m
+
 define Device/tl-wr841n-v13
   $(Device/tplink)
   DTS := TL-WR841NV13
