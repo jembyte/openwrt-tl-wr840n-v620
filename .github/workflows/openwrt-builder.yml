@@ -1,0 +1,59 @@
+name: OpenWrt Builder
+
+on:
+  workflow_dispatch:
+    inputs:
+      verb:
+        description: 'Build verbosity'
+        required: true
+        default: 'no'
+        type: choice
+        options:
+          - 'no'
+          - 'yes'
+          - 'more'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/jembyte/openwrt-tl-wr840n-v620/builder:latest
+      options: --user runner
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Move configuration
+        id: mv-conf
+        run: |
+          BUILDCONF=$(mktemp --tmpdir config.XXXXXXXXXX)
+          mv -v .config $BUILDCONF
+          echo "BUILDCONF=$BUILDCONF" >> "$GITHUB_OUTPUT"
+
+      - name: Update and install feeds
+        run: |
+          scripts/feeds update -a
+          scripts/feeds install -a
+
+      - name: Prepare build
+        run: |
+          mv -fv ${{ steps.mv-conf.outputs.BUILDCONF }} .config
+          make defconfig
+
+      - name: Build OpenWrt
+        run: |
+          if [ ${{ inputs.verb }} = yes ]; then
+              make -j$(nproc --all) V=s
+          elif [ ${{ inputs.verb }} = more ]; then
+              make -j$(nproc --all) V=sc
+          else
+              make -j$(nproc --all)
+          fi
+
+      - name: Upload firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: tl-wr840n-v6.20-16m_openwrt-19.07
+          path: bin/targets/ramips/mt76x8
+          if-no-files-found: error
