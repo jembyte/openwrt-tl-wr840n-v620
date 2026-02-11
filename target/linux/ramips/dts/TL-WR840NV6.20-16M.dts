@@ -96,11 +96,11 @@
 };
 
 &ehci {
-	status = "disabled";
+	status = "okay";
 };
 
 &ohci {
-	status = "disabled";
+	status = "okay";
 };
 
 &wmac {

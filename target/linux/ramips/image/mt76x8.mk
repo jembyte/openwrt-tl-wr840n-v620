@@ -257,6 +257,7 @@ define Device/tplink_tl-wr840n-v6.20-16m
   TPLINK_HWREV := 0x1
   TPLINK_HWREVADD := 0x6
   TPLINK_HVERSION := 3
+  DEVICE_PACKAGES := kmod-usb2 kmod-usb-ohci
   IMAGE/tftp-recovery.bin := pad-extra 64k | $$(IMAGE/factory.bin)
   SUPPORTED_DEVICES += tl-wr840n-v6.20-16m
   DEFAULT := n
